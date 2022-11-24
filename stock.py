@@ -6,6 +6,7 @@ import pandas_datareader as data
 from keras.models import load_model
 import streamlit as st
 from datetime import date, timedelta
+from sklearn.metrics import mean_absolute_error
 
 start = '2010-01-01'
 today = date.today()
@@ -43,21 +44,21 @@ df = df.drop(['Date','Adj Close'], axis=1)
 
 # Splitting data into training and testing
 
-data_training = pd.DataFrame(df['Close'][0:int(len(df)*0.70)])
-data_testing = pd.DataFrame(df['Close'][int(len(df)*0.70):int(len(df))])
+data_training = pd.DataFrame(df['Close'][0:int(len(df)*0.60)])
+data_testing = pd.DataFrame(df['Close'][int(len(df)*0.60):int(len(df))])
 
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler(feature_range=(0,1))
 
-# data_training_array = scaler.fit_transform(data_training)
-# x_train = []
-# y_train = []
-# for i in range(100, data_training.shape[0]):
-#     x_train.append(data_training_array[i-100:i])
-#     y_train.append(data_training_array[i,0])
+data_training_array = scaler.fit_transform(data_training)
+x_train = []
+y_train = []
+for i in range(100, data_training.shape[0]):
+    x_train.append(data_training_array[i-100:i])
+    y_train.append(data_training_array[i,0])
 
-# x_train = np.array(x_train)
-# y_train = np.array(y_train)
+x_train = np.array(x_train)
+y_train = np.array(y_train)
 
 # Load model
 model = load_model('keras_model.h5')
@@ -68,16 +69,16 @@ model = load_model('keras_model.h5')
 # from keras.models import Sequential
 
 # model = Sequential()
-# model.add(LSTM(units = 90, activation = 'relu', return_sequences = True, input_shape = (x_train.shape[1],1)))
+# model.add(LSTM(units = 90, activation = 'softsign', return_sequences = True, input_shape = (x_train.shape[1],1)))
 # model.add(Dropout(0.2))
 
-# model.add(LSTM(units = 100, activation = 'relu', return_sequences = True))
+# model.add(LSTM(units = 100, activation = 'softsign', return_sequences = True))
 # model.add(Dropout(0.3))
 
-# model.add(LSTM(units = 120, activation = 'relu', return_sequences = True))
+# model.add(LSTM(units = 120, activation = 'softsign', return_sequences = True))
 # model.add(Dropout(0.4))
 
-# model.add(LSTM(units = 160, activation = 'relu'))
+# model.add(LSTM(units = 160, activation = 'softsign'))
 # model.add(Dropout(0.5))
 
 # model.add(Dense(units = 1))
@@ -116,3 +117,7 @@ plt.xlabel('Time')
 plt.ylabel('Price')
 plt.legend()
 st.pyplot(fig3)
+
+mape = mean_absolute_error(y_test, y_predicted)
+st.write("Mean absolute error")
+st.write(mape)
