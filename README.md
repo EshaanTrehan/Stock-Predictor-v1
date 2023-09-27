@@ -25,6 +25,7 @@ Explore the fascinating domain of stock prediction with **Stock Predictor v36**.
 2. Launch the application using `streamlit`:
    ```bash
    streamlit run stock.py
+   
    ```
 3. Navigate to the web interface, enter a stock ticker (e.g., AAPL for Apple Inc.), and explore the predictions and visualizations.
 
